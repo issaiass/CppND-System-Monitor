@@ -171,4 +171,4 @@ string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid) { return 0.00; }
+long LinuxParser::UpTime(int pid) { return LinuxParser::UpTime(); }
