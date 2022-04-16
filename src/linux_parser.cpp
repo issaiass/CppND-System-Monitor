@@ -83,9 +83,13 @@ float LinuxParser::MemoryUtilization() {
     std::getline(stream, line);
     std::istringstream linestream_total(line);
     linestream_total >> dummy >> total;
+    if (std::all_of(total.begin(), total.end(), isdigit) == false)
+      total = "1";
     std::getline(stream, line);
     std::istringstream linestream_free(line);   
     linestream_free >> dummy >> free;
+    if (std::all_of(free.begin(), free.end(), isdigit) == false)
+      free = "1";
   }
   return (stof(total) - stof(free))/stof(total);
 }
@@ -255,14 +259,18 @@ string LinuxParser::Ram(int pid) {
       while (linestream >> key >> value) {
         if (key == "VmSize:") {
           std::stringstream s;
-          s << std::fixed << std::setprecision(2) << stof(value)/1024.0;
-          return s.str(); 
+          if (std::all_of(value.begin(), value.end(), isdigit)) {
+            s << std::fixed << std::setprecision(2) << stof(value)/1024.0;
+            return s.str(); 
+          } else {
+            return "0";
+          }
           //return to_string(stoi(value)/1024);
         }
       }
     }
   }
-  return string(); 
+  return "0"; 
 }
 
 // TODO: Read and return the user ID associated with a process
