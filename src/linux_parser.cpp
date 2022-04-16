@@ -125,10 +125,18 @@ long LinuxParser::ActiveJiffies(int pid) {
     }
   }
 
-  utime     = stol(stats[13]);
-  stime     = stol(stats[14]);
-  cutime    = stol(stats[15]);
-  cstime    = stol(stats[16]);
+  utime   = 0;
+  stime   = 0;
+  cutime  = 0;
+  cstime  = 0;
+  if (std::all_of(stats[13].begin(), stats[13].end(), isdigit))
+    utime     = stol(stats[13]);
+  if (std::all_of(stats[14].begin(), stats[14].end(), isdigit))
+    stime     = stol(stats[14]);
+  if (std::all_of(stats[15].begin(), stats[15].end(), isdigit))
+    cutime    = stol(stats[15]);
+  if (std::all_of(stats[16].begin(), stats[16].end(), isdigit))
+    cstime    = stol(stats[16]);
 
   long totaltime = utime + stime + cutime + cstime;
 
@@ -314,5 +322,8 @@ long LinuxParser::UpTime(int pid) {
       }
     }
   }
-  return stol(values.at(21))/sysconf(_SC_CLK_TCK);
+  if (std::all_of(values[21].begin(), values[21].end(), isdigit))
+    return stol(values.at(21))/sysconf(_SC_CLK_TCK);
+  else
+    return 0.0;  
 }
